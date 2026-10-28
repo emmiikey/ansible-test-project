@@ -1,0 +1,18 @@
+---
+- name: Ensure Nginx is running and enabled
+  ansible.builtin.systemd_service:
+    name: nginx
+    state: started
+    enabled: true
+
+- name: Ensure MariaDB is running and enabled
+  ansible.builtin.systemd_service:
+    name: mariadb
+    state: started
+    enabled: true
+
+- name: Ensure Chrony is running and enabled
+  ansible.builtin.systemd_service:
+    name: chronyd
+    state: started
+    enabled: true

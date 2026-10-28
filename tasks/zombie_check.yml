@@ -1,0 +1,21 @@
+---
+# Zombie Process Detection
+
+- name: Check running processes for zombies
+  ansible.builtin.command:
+    cmd: ps -eo stat=,pid=,ppid=,comm=
+  register: process_result
+  changed_when: false
+
+- name: Identify zombie processes
+  ansible.builtin.set_fact:
+    zombie_processes: >-
+      {{
+        process_result.stdout_lines
+        | select('match', '^\s*Z')
+        | list
+      }}
+
+- name: Report zombie process count
+  ansible.builtin.debug:
+    msg: "Found {{ zombie_processes | length }} zombie processes"

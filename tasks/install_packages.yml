@@ -1,0 +1,8 @@
+---
+- name: Ensure required services are installed
+  ansible.builtin.dnf:
+    name:
+      - nginx
+      - mariadb-server
+      - chrony
+    state: present

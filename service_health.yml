@@ -4,61 +4,18 @@
   become: true
 
   tasks:
-    - name: Ensure required services are installed
-      ansible.builtin.dnf:
-        name:
-          - nginx
-          - mariadb-server
-          - chrony
-        state: present
+    # Package Installation
+    - name: Install required packages
+      ansible.builtin.import_tasks: tasks/install_packages.yml
 
-    - name: Ensure Nginx is running and enabled
-      ansible.builtin.systemd_service:
-        name: nginx
-        state: started
-        enabled: true
+    # Service Management
+    - name: Manage service states
+      ansible.builtin.import_tasks: tasks/manage_services.yml
 
-    - name: Ensure MariaDB is running and enabled
-      ansible.builtin.systemd_service:
-        name: mariadb
-        state: started
-        enabled: true
+    # Service Health Validation
+    - name: Validate service health
+      ansible.builtin.import_tasks: tasks/health_checks.yml
 
-    - name: Ensure Chrony is running and enabled
-      ansible.builtin.systemd_service:
-        name: chronyd
-        state: started
-        enabled: true
-
-    - name: Check Nginx HTTP response
-      ansible.builtin.uri:
-        url: http://127.0.0.1
-        status_code: 200
-      register: nginx_result
-
-    - name: Display Nginx health result
-      ansible.builtin.debug:
-        msg: "Nginx returned HTTP status {{ nginx_result.status }}"
-
-    - name: Check MariaDB health
-      ansible.builtin.command:
-        cmd: mariadb-admin ping
-      register: mariadb_result
-      changed_when: false
-
-    - name: Check Chrony health
-      ansible.builtin.command:
-        cmd: chronyc tracking
-      register: chrony_result
-      changed_when: false
-
-    - name: Display MariaDB health
-      ansible.builtin.debug:
-        msg: "{{ mariadb_result.stdout }}"
-
-    - name: Display Chrony health
-      ansible.builtin.debug:
-        msg: "{{ chrony_result.stdout }}"
-
-
-
+    # Zombie Process Detection
+    - name: Check for zombie processes
+      ansible.builtin.import_tasks: tasks/zombie_check.yml
