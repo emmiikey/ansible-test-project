@@ -1,0 +1,13 @@
+---
+- name: Manage Linux Server Health
+  hosts: managed_servers
+  become: true
+
+  tasks:
+    - name: ensure required services are installed
+      ansible.builtin.dnf:
+       name:
+        - nginx
+        - mariadb-server
+        - chrony
+       state: present
