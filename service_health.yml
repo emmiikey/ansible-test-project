@@ -29,3 +29,36 @@
         name: chronyd
         state: started
         enabled: true
+
+    - name: Check Nginx HTTP response
+      ansible.builtin.uri:
+        url: http://127.0.0.1
+        status_code: 200
+      register: nginx_result
+
+    - name: Display Nginx health result
+      ansible.builtin.debug:
+        msg: "Nginx returned HTTP status {{ nginx_result.status }}"
+
+    - name: Check MariaDB health
+      ansible.builtin.command:
+        cmd: mariadb-admin ping
+      register: mariadb_result
+      changed_when: false
+
+    - name: Check Chrony health
+      ansible.builtin.command:
+        cmd: chronyc tracking
+      register: chrony_result
+      changed_when: false
+
+    - name: Display MariaDB health
+      ansible.builtin.debug:
+        msg: "{{ mariadb_result.stdout }}"
+
+    - name: Display Chrony health
+      ansible.builtin.debug:
+        msg: "{{ chrony_result.stdout }}"
+
+
+
