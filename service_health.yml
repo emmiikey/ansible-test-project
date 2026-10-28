@@ -1,13 +1,31 @@
 ---
-- name: Manage Linux Server Health
+- name: Manage Linux service health
   hosts: managed_servers
   become: true
 
   tasks:
-    - name: ensure required services are installed
+    - name: Ensure required services are installed
       ansible.builtin.dnf:
-       name:
-        - nginx
-        - mariadb-server
-        - chrony
-       state: present
+        name:
+          - nginx
+          - mariadb-server
+          - chrony
+        state: present
+
+    - name: Ensure Nginx is running and enabled
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Ensure MariaDB is running and enabled
+      ansible.builtin.systemd_service:
+        name: mariadb
+        state: started
+        enabled: true
+
+    - name: Ensure Chrony is running and enabled
+      ansible.builtin.systemd_service:
+        name: chronyd
+        state: started
+        enabled: true
